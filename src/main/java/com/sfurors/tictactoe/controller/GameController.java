@@ -29,6 +29,11 @@ public class GameController {
         return gameService.findGameState();
     }
 
+    @GetMapping(value = "/reset")
+    public GameState resetGameState() {
+        return gameService.resetGameState();
+    }
+
     @PostMapping(value = "/submit", produces = "application/json")
     public GameState submitMove(@RequestBody CellCoordinates move) {
         return gameService.handleMove(move);

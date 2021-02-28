@@ -7,4 +7,6 @@ public interface GameService {
     public GameState handleMove(CellCoordinates move);
 
     public GameState findGameState();
+
+    public  GameState resetGameState();
 }

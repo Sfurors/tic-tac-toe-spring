@@ -8,6 +8,8 @@ import com.sfurors.tictactoe.service.GameService;
 import com.sfurors.tictactoe.service.ValidationService;
 import org.springframework.stereotype.Service;
 
+import static com.sfurors.tictactoe.model.GameState.BOARD_SIZE;
+
 @Service
 public class GameServiceImpl implements GameService {
 
@@ -34,7 +36,7 @@ public class GameServiceImpl implements GameService {
                 announceNextPlayerMove();
             }
         }
-        return null;
+        return gameStateInMemory;
     }
 
     @Override
@@ -42,7 +44,16 @@ public class GameServiceImpl implements GameService {
         GameState gameStateInMemory = inMemoryRepository.getGameStateInMemory();
         calculateMove(gameStateInMemory.getTableState());
         announceNextPlayerMove();
-        return inMemoryRepository.getGameStateInMemory();
+        return gameStateInMemory;
+    }
+
+    @Override
+    public GameState resetGameState() {
+        GameState gameStateInMemory = inMemoryRepository.getGameStateInMemory();
+        gameStateInMemory.setTableState(new Sign[BOARD_SIZE][BOARD_SIZE]);
+        calculateMove(gameStateInMemory.getTableState());
+        announceNextPlayerMove();
+        return gameStateInMemory;
     }
 
     private void announceNextPlayerMove() {

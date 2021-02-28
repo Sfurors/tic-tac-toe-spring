@@ -81,7 +81,7 @@ public class ValidationServiceImpl implements ValidationService {
                 }
             }
         }
-        return xCount == BOARD_SIZE && oCount == BOARD_SIZE;
+        return xCount + oCount == BOARD_SIZE * BOARD_SIZE;
     }
 
 }
