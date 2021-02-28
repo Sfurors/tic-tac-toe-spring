@@ -5,21 +5,77 @@ import com.sfurors.tictactoe.model.Sign;
 import com.sfurors.tictactoe.service.ValidationService;
 import org.springframework.stereotype.Service;
 
-import static com.sfurors.tictactoe.model.GameState.BOARD_SIZE;
+import static com.sfurors.tictactoe.model.GameState.TABLE_SIZE;
 @Service
 public class ValidationServiceImpl implements ValidationService {
 
+    @Override
     public boolean validateMove(Sign[][] tableState, CellCoordinates move) {
-        if (tableState[move.getColumn()][move.getRow()] != null) {
-            return false;
-        } else {
-            return true;
-        }
+        return tableState[move.getColumn()][move.getRow()] == null;
     }
 
+    @Override
     public boolean checkWin(Sign nextMoveSign, Sign[][] tableState) {
         boolean isWinningMove = false;
 
+        if (checkRows(nextMoveSign, tableState)) return true;
+
+        if (checkColumns(nextMoveSign, tableState)) return true;
+
+        if (checkDiagonalFromUp(nextMoveSign, tableState)) return true;
+
+        isWinningMove = checkDiagonalFromDown(nextMoveSign, tableState);
+
+        return isWinningMove;
+    }
+
+    private boolean checkDiagonalFromDown(Sign nextMoveSign, Sign[][] tableState) {
+        boolean isWinningMove;
+        isWinningMove = true;
+        for (int column = 0; column < tableState[0].length; column++) {
+            if (tableState[column][tableState.length - 1 - column] != nextMoveSign) {
+                isWinningMove = false;
+                break;
+            }
+        }
+        return isWinningMove;
+    }
+
+    private boolean checkDiagonalFromUp(Sign nextMoveSign, Sign[][] tableState) {
+        boolean isWinningMove;
+        isWinningMove = true;
+        for (int column = 0; column < tableState.length; column++) {
+            if (tableState[column][column] != nextMoveSign) {
+                isWinningMove = false;
+                break;
+            }
+        }
+        if (isWinningMove) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean checkColumns(Sign nextMoveSign, Sign[][] tableState) {
+        boolean isWinningMove;
+        for (int row = 0; row < tableState[0].length; row++) {
+            isWinningMove = true;
+            for (int column = 0; column < tableState.length; column++) {
+                System.out.println(tableState[column][row]);
+                if (tableState[column][row] != nextMoveSign) {
+                    isWinningMove = false;
+                    break;
+                }
+            }
+            if (isWinningMove) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean checkRows(Sign nextMoveSign, Sign[][] tableState) {
+        boolean isWinningMove;
         for (int column = 0; column < tableState.length; column++) {
             isWinningMove = true;
             for (int row = 0; row < tableState[0].length; row++) {
@@ -33,42 +89,10 @@ public class ValidationServiceImpl implements ValidationService {
                 return true;
             }
         }
-
-        for (int row = 0; row < tableState[0].length; row++) {
-            isWinningMove = true;
-            for (int column = 0; column < tableState.length; column++) {
-                if (tableState[column][row] != nextMoveSign) {
-                    isWinningMove = false;
-                    break;
-                }
-            }
-            if (isWinningMove) {
-                return true;
-            }
-        }
-
-        isWinningMove = true;
-        for (int column = 0; column < tableState.length; column++) {
-            if (tableState[column][column] != nextMoveSign) {
-                isWinningMove = false;
-                break;
-            }
-        }
-        if (isWinningMove) {
-            return true;
-        }
-
-        isWinningMove = true;
-        for (int column = 0; column < tableState[0].length; column++) {
-            if (tableState[column][tableState.length - 1 - column] != nextMoveSign) {
-                isWinningMove = false;
-                break;
-            }
-        }
-
-        return isWinningMove;
+        return false;
     }
 
+    @Override
     public boolean checkDraw(Sign[][] tableState) {
         int xCount = 0;
         int oCount = 0;
@@ -81,7 +105,7 @@ public class ValidationServiceImpl implements ValidationService {
                 }
             }
         }
-        return xCount + oCount == BOARD_SIZE * BOARD_SIZE;
+        return xCount + oCount == TABLE_SIZE * TABLE_SIZE;
     }
 
 }

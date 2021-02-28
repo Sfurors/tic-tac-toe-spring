@@ -4,9 +4,9 @@ import com.sfurors.tictactoe.model.CellCoordinates;
 import com.sfurors.tictactoe.model.GameState;
 
 public interface GameService {
-    public GameState handleMove(CellCoordinates move);
+    GameState handleMove(CellCoordinates move);
 
-    public GameState findGameState();
+    GameState findGameState();
 
-    public  GameState resetGameState();
+    GameState resetGameState();
 }

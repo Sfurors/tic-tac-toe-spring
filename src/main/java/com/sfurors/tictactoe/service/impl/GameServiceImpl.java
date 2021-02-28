@@ -8,20 +8,21 @@ import com.sfurors.tictactoe.service.GameService;
 import com.sfurors.tictactoe.service.ValidationService;
 import org.springframework.stereotype.Service;
 
-import static com.sfurors.tictactoe.model.GameState.BOARD_SIZE;
+import static com.sfurors.tictactoe.model.GameState.TABLE_SIZE;
 
 @Service
 public class GameServiceImpl implements GameService {
 
-    private ValidationService validationService;
+    private final ValidationService validationService;
 
-    private InMemoryRepository inMemoryRepository;
+    private final InMemoryRepository inMemoryRepository;
 
     public GameServiceImpl(ValidationService validationService, InMemoryRepository inMemoryRepository) {
         this.validationService = validationService;
         this.inMemoryRepository = inMemoryRepository;
     }
 
+    @Override
     public GameState handleMove(CellCoordinates move) {
         GameState gameStateInMemory = inMemoryRepository.getGameStateInMemory();
         Sign[][] tableState = gameStateInMemory.getTableState();
@@ -30,13 +31,21 @@ public class GameServiceImpl implements GameService {
             makeMove(tableState, move);
             if (validationService.checkWin(nextMoveSign, tableState)) {
                 announceWinner();
+                resetGameAtEnd();
             } else if (validationService.checkDraw(tableState)) {
                 announceDraw();
+                resetGameAtEnd();
             } else {
                 announceNextPlayerMove();
             }
         }
         return gameStateInMemory;
+    }
+
+    private void resetGameAtEnd() {
+        GameState gameStateInMemory = inMemoryRepository.getGameStateInMemory();
+        gameStateInMemory.setTableState(new Sign[TABLE_SIZE][TABLE_SIZE]);
+        gameStateInMemory.setCurrentPlayer(Sign.O);
     }
 
     @Override
@@ -50,15 +59,15 @@ public class GameServiceImpl implements GameService {
     @Override
     public GameState resetGameState() {
         GameState gameStateInMemory = inMemoryRepository.getGameStateInMemory();
-        gameStateInMemory.setTableState(new Sign[BOARD_SIZE][BOARD_SIZE]);
-        calculateMove(gameStateInMemory.getTableState());
-        announceNextPlayerMove();
+        gameStateInMemory.setTableState(new Sign[TABLE_SIZE][TABLE_SIZE]);
+        gameStateInMemory.setCurrentPlayer(Sign.O);
+        gameStateInMemory.setVerdict("Player " + gameStateInMemory.getCurrentPlayer().name() + " begins");
         return gameStateInMemory;
     }
 
     private void announceNextPlayerMove() {
-        Sign nextMoveSign = inMemoryRepository.getGameStateInMemory().getCurrentPlayer();
-        inMemoryRepository.getGameStateInMemory().setVerdict("Next player: " + nextMoveSign.name());
+        Sign currentMoveSign = inMemoryRepository.getGameStateInMemory().getCurrentPlayer();
+        inMemoryRepository.getGameStateInMemory().setVerdict("Next player: " + (currentMoveSign == Sign.O ? Sign.X.name() : Sign.O.name()));
     }
 
     private void announceDraw() {
