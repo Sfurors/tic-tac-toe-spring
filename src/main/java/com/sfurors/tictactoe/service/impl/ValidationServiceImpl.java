@@ -15,24 +15,24 @@ public class ValidationServiceImpl implements ValidationService {
     }
 
     @Override
-    public boolean checkWin(Sign nextMoveSign, Sign[][] tableState) {
+    public boolean checkWin(Sign currentMoveSign, Sign[][] tableState) {
         boolean isWinningMove;
 
-        if (checkRows(nextMoveSign, tableState)) return true;
+        if (checkRows(currentMoveSign, tableState)) return true;
 
-        if (checkColumns(nextMoveSign, tableState)) return true;
+        if (checkColumns(currentMoveSign, tableState)) return true;
 
-        if (checkDiagonalFromUp(nextMoveSign, tableState)) return true;
+        if (checkDiagonalFromUp(currentMoveSign, tableState)) return true;
 
-        isWinningMove = checkDiagonalFromDown(nextMoveSign, tableState);
+        isWinningMove = checkDiagonalFromDown(currentMoveSign, tableState);
 
         return isWinningMove;
     }
 
-    private boolean checkDiagonalFromDown(Sign nextMoveSign, Sign[][] tableState) {
+    private boolean checkDiagonalFromDown(Sign currentMoveSign, Sign[][] tableState) {
         boolean isWinningMove = true;
         for (int column = 0; column < tableState[0].length; column++) {
-            if (tableState[column][tableState.length - 1 - column] != nextMoveSign) {
+            if (tableState[column][tableState.length - 1 - column] != currentMoveSign) {
                 isWinningMove = false;
                 break;
             }
@@ -40,10 +40,10 @@ public class ValidationServiceImpl implements ValidationService {
         return isWinningMove;
     }
 
-    private boolean checkDiagonalFromUp(Sign nextMoveSign, Sign[][] tableState) {
+    private boolean checkDiagonalFromUp(Sign currentMoveSign, Sign[][] tableState) {
         boolean isWinningMove = true;
         for (int column = 0; column < tableState.length; column++) {
-            if (tableState[column][column] != nextMoveSign) {
+            if (tableState[column][column] != currentMoveSign) {
                 isWinningMove = false;
                 break;
             }
@@ -54,12 +54,12 @@ public class ValidationServiceImpl implements ValidationService {
         return false;
     }
 
-    private boolean checkColumns(Sign nextMoveSign, Sign[][] tableState) {
+    private boolean checkColumns(Sign currentMoveSign, Sign[][] tableState) {
         boolean isWinningMove;
         for (int row = 0; row < tableState[0].length; row++) {
             isWinningMove = true;
             for (int column = 0; column < tableState.length; column++) {
-                if (tableState[column][row] != nextMoveSign) {
+                if (tableState[column][row] != currentMoveSign) {
                     isWinningMove = false;
                     break;
                 }
@@ -71,12 +71,12 @@ public class ValidationServiceImpl implements ValidationService {
         return false;
     }
 
-    private boolean checkRows(Sign nextMoveSign, Sign[][] tableState) {
+    private boolean checkRows(Sign currentMoveSign, Sign[][] tableState) {
         boolean isWinningMove;
         for (int column = 0; column < tableState.length; column++) {
             isWinningMove = true;
             for (int row = 0; row < tableState[0].length; row++) {
-                if (tableState[column][row] != nextMoveSign) {
+                if (tableState[column][row] != currentMoveSign) {
                     isWinningMove = false;
                     break;
                 }

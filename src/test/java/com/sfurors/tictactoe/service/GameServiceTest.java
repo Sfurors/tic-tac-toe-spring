@@ -38,9 +38,6 @@ class GameServiceTest {
         CellCoordinates cellCoordinates = new CellCoordinates();
         cellCoordinates.setColumn(1);
         cellCoordinates.setRow(1);
-        GameTableBuilder gameTableBuilder = new GameTableBuilder();
-        Sign[][] tableState1 = gameTableBuilder.setSigns(new Sign[]{Sign.O, Sign.O, Sign.O, Sign.O, Sign.O, Sign.O, Sign.O, Sign.O, Sign.O}).build();
-
         Mockito.when(inMemoryRepository.getGameStateInMemory()).thenReturn(gameState);
 
         GameState result = gameService.handleMove(cellCoordinates);

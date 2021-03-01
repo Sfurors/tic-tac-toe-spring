@@ -5,6 +5,6 @@ import com.sfurors.tictactoe.model.Sign;
 
 public interface ValidationService {
     boolean validateMove(Sign[][] tableState, CellCoordinates move);
-    boolean checkWin(Sign nextMoveSign, Sign[][] tableState);
+    boolean checkWin(Sign currentMoveSign, Sign[][] tableState);
     boolean checkDraw(Sign[][] tableState);
 }
