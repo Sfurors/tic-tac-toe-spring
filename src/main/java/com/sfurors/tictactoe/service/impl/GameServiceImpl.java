@@ -76,7 +76,7 @@ public class GameServiceImpl implements GameService {
 
     private void announceWinner() {
         Sign nextMoveSign = inMemoryRepository.getGameStateInMemory().getCurrentPlayer();
-        inMemoryRepository.getGameStateInMemory().setVerdict("Player " + nextMoveSign.name() + " won!");
+        inMemoryRepository.getGameStateInMemory().setVerdict("Player " + nextMoveSign.name() + " wins!");
     }
 
     private Sign calculateMove(Sign[][] tableState) {

@@ -16,7 +16,7 @@ public class ValidationServiceImpl implements ValidationService {
 
     @Override
     public boolean checkWin(Sign nextMoveSign, Sign[][] tableState) {
-        boolean isWinningMove = false;
+        boolean isWinningMove;
 
         if (checkRows(nextMoveSign, tableState)) return true;
 
@@ -30,8 +30,7 @@ public class ValidationServiceImpl implements ValidationService {
     }
 
     private boolean checkDiagonalFromDown(Sign nextMoveSign, Sign[][] tableState) {
-        boolean isWinningMove;
-        isWinningMove = true;
+        boolean isWinningMove = true;
         for (int column = 0; column < tableState[0].length; column++) {
             if (tableState[column][tableState.length - 1 - column] != nextMoveSign) {
                 isWinningMove = false;
@@ -42,8 +41,7 @@ public class ValidationServiceImpl implements ValidationService {
     }
 
     private boolean checkDiagonalFromUp(Sign nextMoveSign, Sign[][] tableState) {
-        boolean isWinningMove;
-        isWinningMove = true;
+        boolean isWinningMove = true;
         for (int column = 0; column < tableState.length; column++) {
             if (tableState[column][column] != nextMoveSign) {
                 isWinningMove = false;
@@ -61,7 +59,6 @@ public class ValidationServiceImpl implements ValidationService {
         for (int row = 0; row < tableState[0].length; row++) {
             isWinningMove = true;
             for (int column = 0; column < tableState.length; column++) {
-                System.out.println(tableState[column][row]);
                 if (tableState[column][row] != nextMoveSign) {
                     isWinningMove = false;
                     break;
@@ -79,7 +76,6 @@ public class ValidationServiceImpl implements ValidationService {
         for (int column = 0; column < tableState.length; column++) {
             isWinningMove = true;
             for (int row = 0; row < tableState[0].length; row++) {
-                System.out.println(tableState[column][row]);
                 if (tableState[column][row] != nextMoveSign) {
                     isWinningMove = false;
                     break;
