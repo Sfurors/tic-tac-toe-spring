@@ -1,14 +1,14 @@
-package com.sfurors.tictactoe.service.impl;
+package com.sfurors.tictactoe.services.impl;
 
-import com.sfurors.tictactoe.model.CellCoordinates;
-import com.sfurors.tictactoe.model.GameState;
-import com.sfurors.tictactoe.model.Sign;
-import com.sfurors.tictactoe.repository.InMemoryRepository;
-import com.sfurors.tictactoe.service.GameService;
-import com.sfurors.tictactoe.service.ValidationService;
+import com.sfurors.tictactoe.models.CellCoordinates;
+import com.sfurors.tictactoe.models.GameState;
+import com.sfurors.tictactoe.models.Sign;
+import com.sfurors.tictactoe.repositories.InMemoryRepository;
+import com.sfurors.tictactoe.services.GameService;
+import com.sfurors.tictactoe.services.ValidationService;
 import org.springframework.stereotype.Service;
 
-import static com.sfurors.tictactoe.model.GameState.TABLE_SIZE;
+import static com.sfurors.tictactoe.models.GameState.TABLE_SIZE;
 
 @Service
 public class GameServiceImpl implements GameService {

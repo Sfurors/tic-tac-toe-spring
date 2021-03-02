@@ -1,7 +1,7 @@
-package com.sfurors.tictactoe.service;
+package com.sfurors.tictactoe.services;
 
-import com.sfurors.tictactoe.model.CellCoordinates;
-import com.sfurors.tictactoe.model.Sign;
+import com.sfurors.tictactoe.models.CellCoordinates;
+import com.sfurors.tictactoe.models.Sign;
 
 public interface ValidationService {
     boolean validateMove(Sign[][] tableState, CellCoordinates move);

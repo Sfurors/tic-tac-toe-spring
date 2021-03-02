@@ -1,4 +1,4 @@
-package com.sfurors.tictactoe.model;
+package com.sfurors.tictactoe.models;
 
 public enum Sign {
     X,

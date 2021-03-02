@@ -1,6 +1,6 @@
-package com.sfurors.tictactoe.repository;
+package com.sfurors.tictactoe.repositories;
 
-import com.sfurors.tictactoe.model.GameState;
+import com.sfurors.tictactoe.models.GameState;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.stereotype.Repository;

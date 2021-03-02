@@ -1,4 +1,4 @@
-package com.sfurors.tictactoe.model;
+package com.sfurors.tictactoe.models;
 
 import lombok.Getter;
 import lombok.Setter;

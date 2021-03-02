@@ -1,8 +1,8 @@
-package com.sfurors.tictactoe.controller;
+package com.sfurors.tictactoe.controllers;
 
-import com.sfurors.tictactoe.model.CellCoordinates;
-import com.sfurors.tictactoe.model.GameState;
-import com.sfurors.tictactoe.service.GameService;
+import com.sfurors.tictactoe.models.CellCoordinates;
+import com.sfurors.tictactoe.models.GameState;
+import com.sfurors.tictactoe.services.GameService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -1,8 +1,8 @@
-package com.sfurors.tictactoe.util;
+package com.sfurors.tictactoe.utils;
 
-import com.sfurors.tictactoe.model.Sign;
+import com.sfurors.tictactoe.models.Sign;
 
-import static com.sfurors.tictactoe.model.GameState.TABLE_SIZE;
+import static com.sfurors.tictactoe.models.GameState.TABLE_SIZE;
 
 public class GameTableBuilder {
 
