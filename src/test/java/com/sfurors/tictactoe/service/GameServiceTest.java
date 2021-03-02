@@ -7,6 +7,8 @@ import com.sfurors.tictactoe.repository.InMemoryRepository;
 import com.sfurors.tictactoe.service.impl.GameServiceImpl;
 import com.sfurors.tictactoe.service.impl.ValidationServiceImpl;
 import org.junit.Assert;
+import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -27,22 +29,31 @@ class GameServiceTest {
 
     GameService gameService;
 
-    @Test
-    void shouldNotMakeMoveCellOccupied() {
+    @BeforeEach
+    void setUp() {
         inMemoryRepository = mock(InMemoryRepository.class);
         validationService = new ValidationServiceImpl();
         gameService = new GameServiceImpl(validationService, inMemoryRepository);
+    }
+
+    @Test
+    void shouldNotMakeMoveCellOccupied() {
+        //given
         GameState gameState = createNewGameState();
         GameState gameStateBackup = createNewGameState();
         CellCoordinates cellCoordinates = new CellCoordinates();
         cellCoordinates.setColumn(1);
         cellCoordinates.setRow(1);
-        Mockito.when(inMemoryRepository.getGameStateInMemory()).thenReturn(gameState);
 
+        //when
+        Mockito.when(inMemoryRepository.getGameStateInMemory()).thenReturn(gameState);
         GameState result = gameService.handleMove(cellCoordinates);
 
+        //then
         Assert.assertArrayEquals(result.getTableState(), gameStateBackup.getTableState());
     }
+
+
 
     private GameState createNewGameState() {
         GameState gameState = new GameState();
@@ -53,9 +64,7 @@ class GameServiceTest {
 
     @Test
     void shouldMakeMoveAndWin() {
-        inMemoryRepository = mock(InMemoryRepository.class);
-        validationService = new ValidationServiceImpl();
-        gameService = new GameServiceImpl(validationService, inMemoryRepository);
+        //given
         GameState gameState = createNewGameState();
         GameState gameStateBackup = createNewGameState();
         Sign[][] tableState = gameState.getTableState();
@@ -65,19 +74,19 @@ class GameServiceTest {
         CellCoordinates cellCoordinates = new CellCoordinates();
         cellCoordinates.setColumn(1);
         cellCoordinates.setRow(1);
-        Mockito.when(inMemoryRepository.getGameStateInMemory()).thenReturn(gameState);
 
+        //when
+        Mockito.when(inMemoryRepository.getGameStateInMemory()).thenReturn(gameState);
         GameState result = gameService.handleMove(cellCoordinates);
 
+        //then
         Assert.assertFalse(Arrays.equals(result.getTableState(), gameStateBackup.getTableState()));
         Assert.assertEquals("Player O wins!", result.getVerdict());
     }
 
     @Test
     void shouldMakeMoveAndDraw() {
-        inMemoryRepository = mock(InMemoryRepository.class);
-        validationService = new ValidationServiceImpl();
-        gameService = new GameServiceImpl(validationService, inMemoryRepository);
+        //given
         GameState gameState = createNewGameState();
         GameState gameStateBackup = createNewGameState();
         Sign[][] tableState = gameState.getTableState();
@@ -90,10 +99,11 @@ class GameServiceTest {
         cellCoordinates.setColumn(1);
         cellCoordinates.setRow(2);
 
+        //when
         Mockito.when(inMemoryRepository.getGameStateInMemory()).thenReturn(gameState);
-
         GameState result = gameService.handleMove(cellCoordinates);
 
+        //then
         Assert.assertFalse(Arrays.equals(result.getTableState(), gameStateBackup.getTableState()));
         Assert.assertEquals("Draw!", result.getVerdict());
     }
@@ -106,9 +116,7 @@ class GameServiceTest {
 
     @Test
     void shouldMakeMoveAndNextPlayerTurn() {
-        inMemoryRepository = mock(InMemoryRepository.class);
-        validationService = new ValidationServiceImpl();
-        gameService = new GameServiceImpl(validationService, inMemoryRepository);
+        //given
         GameState gameState = createNewGameState();
         GameState gameStateBackup = createNewGameState();
         Sign[][] tableState = gameState.getTableState();
@@ -121,10 +129,11 @@ class GameServiceTest {
         cellCoordinates.setColumn(1);
         cellCoordinates.setRow(2);
 
+        //when
         Mockito.when(inMemoryRepository.getGameStateInMemory()).thenReturn(gameState);
-
         GameState result = gameService.handleMove(cellCoordinates);
 
+        //then
         Assert.assertFalse(Arrays.equals(result.getTableState(), gameStateBackup.getTableState()));
         Assert.assertEquals("Next player: O", result.getVerdict());
     }
@@ -148,34 +157,32 @@ class GameServiceTest {
 
     @Test
     void shouldFindGameState() {
-        inMemoryRepository = mock(InMemoryRepository.class);
-        validationService = new ValidationServiceImpl();
-        gameService = new GameServiceImpl(validationService, inMemoryRepository);
+        //given
         GameState gameState = createNewGameState();
         Sign[][] tableState = gameState.getTableState();
         tableState[1][1] = null;
         Sign nextPlayer = Sign.O;
 
+        //when
         Mockito.when(inMemoryRepository.getGameStateInMemory()).thenReturn(gameState);
-
         GameState result = gameService.findGameState();
 
+        //then
         Assert.assertEquals(nextPlayer, result.getCurrentPlayer());
     }
 
     @Test
     void shouldResetGameState() {
-        inMemoryRepository = mock(InMemoryRepository.class);
-        validationService = new ValidationServiceImpl();
-        gameService = new GameServiceImpl(validationService, inMemoryRepository);
+        //given
         GameState gameState = createNewGameState();
         Sign[][] emptyTableState = new Sign[TABLE_SIZE][TABLE_SIZE];
 
+        //when
         Mockito.when(inMemoryRepository.getGameStateInMemory()).thenReturn(gameState);
-
         GameState result = gameService.resetGameState();
-        Sign[][] resultTableState = result.getTableState();
 
+        //then
+        Sign[][] resultTableState = result.getTableState();
         Assert.assertTrue(Arrays.deepEquals(resultTableState, emptyTableState));
     }
 }
