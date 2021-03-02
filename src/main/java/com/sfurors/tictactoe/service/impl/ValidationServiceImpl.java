@@ -31,8 +31,8 @@ public class ValidationServiceImpl implements ValidationService {
 
     private boolean checkDiagonalFromDown(Sign currentMoveSign, Sign[][] tableState) {
         boolean isWinningMove = true;
-        for (int column = 0; column < tableState[0].length; column++) {
-            if (tableState[column][tableState.length - 1 - column] != currentMoveSign) {
+        for (int column = 0; column < TABLE_SIZE; column++) {
+            if (tableState[column][TABLE_SIZE - 1 - column] != currentMoveSign) {
                 isWinningMove = false;
                 break;
             }
@@ -42,23 +42,20 @@ public class ValidationServiceImpl implements ValidationService {
 
     private boolean checkDiagonalFromUp(Sign currentMoveSign, Sign[][] tableState) {
         boolean isWinningMove = true;
-        for (int column = 0; column < tableState.length; column++) {
+        for (int column = 0; column < TABLE_SIZE; column++) {
             if (tableState[column][column] != currentMoveSign) {
                 isWinningMove = false;
                 break;
             }
         }
-        if (isWinningMove) {
-            return true;
-        }
-        return false;
+        return isWinningMove;
     }
 
     private boolean checkColumns(Sign currentMoveSign, Sign[][] tableState) {
         boolean isWinningMove;
-        for (int row = 0; row < tableState[0].length; row++) {
+        for (int row = 0; row < TABLE_SIZE; row++) {
             isWinningMove = true;
-            for (int column = 0; column < tableState.length; column++) {
+            for (int column = 0; column < TABLE_SIZE; column++) {
                 if (tableState[column][row] != currentMoveSign) {
                     isWinningMove = false;
                     break;
@@ -73,9 +70,9 @@ public class ValidationServiceImpl implements ValidationService {
 
     private boolean checkRows(Sign currentMoveSign, Sign[][] tableState) {
         boolean isWinningMove;
-        for (int column = 0; column < tableState.length; column++) {
+        for (int column = 0; column < TABLE_SIZE; column++) {
             isWinningMove = true;
-            for (int row = 0; row < tableState[0].length; row++) {
+            for (int row = 0; row < TABLE_SIZE; row++) {
                 if (tableState[column][row] != currentMoveSign) {
                     isWinningMove = false;
                     break;
@@ -92,8 +89,8 @@ public class ValidationServiceImpl implements ValidationService {
     public boolean checkDraw(Sign[][] tableState) {
         int xCount = 0;
         int oCount = 0;
-        for (int column = 0; column < 3; column++) {
-            for (int row = 0; row < 3; row++) {
+        for (int column = 0; column < TABLE_SIZE; column++) {
+            for (int row = 0; row < TABLE_SIZE; row++) {
                 if (tableState[column][row] == Sign.X) {
                     xCount++;
                 } else if (tableState[column][row] == Sign.O) {

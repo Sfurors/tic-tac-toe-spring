@@ -6,7 +6,6 @@ import com.sfurors.tictactoe.model.Sign;
 import com.sfurors.tictactoe.repository.InMemoryRepository;
 import com.sfurors.tictactoe.service.impl.GameServiceImpl;
 import com.sfurors.tictactoe.service.impl.ValidationServiceImpl;
-import com.sfurors.tictactoe.util.GameTableBuilder;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -16,14 +15,14 @@ import org.springframework.beans.BeanUtils;
 
 import java.util.Arrays;
 
+import static com.sfurors.tictactoe.model.GameState.TABLE_SIZE;
 import static org.mockito.Mockito.mock;
 
 @RunWith(MockitoJUnitRunner.class)
 class GameServiceTest {
 
-    private static final int TABLE_BOARD = 3;
-
     InMemoryRepository inMemoryRepository;
+
     ValidationService validationService;
 
     GameService gameService;
@@ -100,7 +99,7 @@ class GameServiceTest {
     }
 
     private Sign[][] cloneTableState(Sign[][] tableState) {
-        Sign[][] tableStateBackup = new Sign[3][3];
+        Sign[][] tableStateBackup = new Sign[TABLE_SIZE][TABLE_SIZE];
         BeanUtils.copyProperties(tableState, tableStateBackup);
         return tableStateBackup;
     }
@@ -134,9 +133,9 @@ class GameServiceTest {
         //x;o;x
         //o;o;o
         //x;o;x
-        Sign[][] tableState = new Sign[TABLE_BOARD][TABLE_BOARD];
-        for (int column = 0; column < TABLE_BOARD; column++) {
-            for (int row = 0; row < TABLE_BOARD; row++) {
+        Sign[][] tableState = new Sign[TABLE_SIZE][TABLE_SIZE];
+        for (int column = 0; column < TABLE_SIZE; column++) {
+            for (int row = 0; row < TABLE_SIZE; row++) {
                 if ((column % 2) == 1 || (row % 2) == 1) {
                     tableState[column][row] = Sign.O;
                 } else {
@@ -170,7 +169,7 @@ class GameServiceTest {
         validationService = new ValidationServiceImpl();
         gameService = new GameServiceImpl(validationService, inMemoryRepository);
         GameState gameState = createNewGameState();
-        Sign[][] emptyTableState = new Sign[TABLE_BOARD][TABLE_BOARD];
+        Sign[][] emptyTableState = new Sign[TABLE_SIZE][TABLE_SIZE];
 
         Mockito.when(inMemoryRepository.getGameStateInMemory()).thenReturn(gameState);
 
