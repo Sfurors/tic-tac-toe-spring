@@ -6,13 +6,13 @@ import com.sfurors.tictactoe.models.Sign;
 import com.sfurors.tictactoe.repositories.InMemoryRepository;
 import com.sfurors.tictactoe.services.impl.GameServiceImpl;
 import com.sfurors.tictactoe.services.impl.ValidationServiceImpl;
+import com.sfurors.tictactoe.utils.GameTableBuilder;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.beans.BeanUtils;
 
 import java.util.Arrays;
 
@@ -38,8 +38,16 @@ class GameServiceTest {
     @Test
     void shouldNotMakeMoveCellOccupied() {
         //given
-        GameState gameState = createNewGameState();
-        GameState gameStateBackup = createNewGameState();
+        GameTableBuilder gameTableBuilder = new GameTableBuilder();
+        GameState gameState = new GameState();
+        GameState gameStateBackup = new GameState();
+        Sign[][] tableState = gameTableBuilder
+                .setSigns(new Sign[]{null, null, null, null, Sign.O, null, null, null, null}).build();
+        Sign[][] tableStateBackup = gameTableBuilder
+                .setSigns(new Sign[]{null, null, null, null, Sign.O, null, null, null, null}).build();
+        gameState.setTableState(tableState);
+        gameStateBackup.setTableState(tableStateBackup);
+
         CellCoordinates cellCoordinates = new CellCoordinates();
         cellCoordinates.setColumn(1);
         cellCoordinates.setRow(1);
@@ -52,24 +60,19 @@ class GameServiceTest {
         Assert.assertArrayEquals(result.getTableState(), gameStateBackup.getTableState());
     }
 
-
-
-    private GameState createNewGameState() {
-        GameState gameState = new GameState();
-        Sign[][] tableState = fillTableState();
-        gameState.setTableState(tableState);
-        return gameState;
-    }
-
     @Test
     void shouldMakeMoveAndWin() {
         //given
-        GameState gameState = createNewGameState();
-        GameState gameStateBackup = createNewGameState();
-        Sign[][] tableState = gameState.getTableState();
-        Sign[][] tableStateBackup = gameStateBackup.getTableState();
-        tableState[1][1] = null;
-        tableStateBackup[1][1] = null;
+        GameTableBuilder gameTableBuilder = new GameTableBuilder();
+        GameState gameState = new GameState();
+        GameState gameStateBackup = new GameState();
+        Sign[][] tableState = gameTableBuilder
+                .setSigns(new Sign[]{Sign.O, Sign.O, Sign.X, Sign.O, null, null, Sign.X, null, null}).build();
+        Sign[][] tableStateBackup = gameTableBuilder
+                .setSigns(new Sign[]{Sign.O, Sign.O, Sign.X, Sign.O, null, null, Sign.X, null, null}).build();
+        gameState.setTableState(tableState);
+        gameStateBackup.setTableState(tableStateBackup);
+
         CellCoordinates cellCoordinates = new CellCoordinates();
         cellCoordinates.setColumn(1);
         cellCoordinates.setRow(1);
@@ -80,23 +83,25 @@ class GameServiceTest {
 
         //then
         Assert.assertFalse(Arrays.equals(result.getTableState(), gameStateBackup.getTableState()));
-        Assert.assertEquals("Player O wins!", result.getVerdict());
+        Assert.assertEquals("X won", result.getVerdict());
     }
 
     @Test
     void shouldMakeMoveAndDraw() {
         //given
-        GameState gameState = createNewGameState();
-        GameState gameStateBackup = createNewGameState();
-        Sign[][] tableState = gameState.getTableState();
-        tableState[2][2] = Sign.O;
-        tableState[1][2] = null;
-        tableState[1][1] = Sign.X;
-        Sign[][] tableStateBackup = cloneTableState(tableState);
+        GameTableBuilder gameTableBuilder = new GameTableBuilder();
+        GameState gameState = new GameState();
+        GameState gameStateBackup = new GameState();
+        Sign[][] tableState = gameTableBuilder
+                .setSigns(new Sign[]{Sign.O, Sign.O, Sign.X, Sign.X, null, Sign.O, Sign.O, Sign.X, Sign.O}).build();
+        Sign[][] tableStateBackup = gameTableBuilder
+                .setSigns(new Sign[]{Sign.O, Sign.O, Sign.X, Sign.X, null, Sign.O, Sign.O, Sign.X, Sign.O}).build();
+        gameState.setTableState(tableState);
         gameStateBackup.setTableState(tableStateBackup);
+
         CellCoordinates cellCoordinates = new CellCoordinates();
         cellCoordinates.setColumn(1);
-        cellCoordinates.setRow(2);
+        cellCoordinates.setRow(1);
 
         //when
         Mockito.when(inMemoryRepository.getGameStateInMemory()).thenReturn(gameState);
@@ -104,26 +109,22 @@ class GameServiceTest {
 
         //then
         Assert.assertFalse(Arrays.equals(result.getTableState(), gameStateBackup.getTableState()));
-        Assert.assertEquals("Draw!", result.getVerdict());
-    }
-
-    private Sign[][] cloneTableState(Sign[][] tableState) {
-        Sign[][] tableStateBackup = new Sign[TABLE_SIZE][TABLE_SIZE];
-        BeanUtils.copyProperties(tableState, tableStateBackup);
-        return tableStateBackup;
+        Assert.assertEquals("Draw", result.getVerdict());
     }
 
     @Test
     void shouldMakeMoveAndNextPlayerTurn() {
         //given
-        GameState gameState = createNewGameState();
-        GameState gameStateBackup = createNewGameState();
-        Sign[][] tableState = gameState.getTableState();
-        tableState[2][2] = Sign.O;
-        tableState[1][2] = null;
-        tableState[1][1] = null;
-        Sign[][] tableStateBackup = cloneTableState(tableState);
+        GameTableBuilder gameTableBuilder = new GameTableBuilder();
+        GameState gameState = new GameState();
+        GameState gameStateBackup = new GameState();
+        Sign[][] tableState = gameTableBuilder
+                .setSigns(new Sign[]{Sign.O, Sign.O, Sign.X, Sign.X, null, null, Sign.O, Sign.X, Sign.O}).build();
+        Sign[][] tableStateBackup = gameTableBuilder
+                .setSigns(new Sign[]{Sign.O, Sign.O, Sign.X, Sign.X, null, null, Sign.O, Sign.X, Sign.O}).build();
+        gameState.setTableState(tableState);
         gameStateBackup.setTableState(tableStateBackup);
+
         CellCoordinates cellCoordinates = new CellCoordinates();
         cellCoordinates.setColumn(1);
         cellCoordinates.setRow(2);
@@ -133,33 +134,18 @@ class GameServiceTest {
         GameState result = gameService.handleMove(cellCoordinates);
 
         //then
-        Assert.assertFalse(Arrays.equals(result.getTableState(), gameStateBackup.getTableState()));
-        Assert.assertEquals("Next player: O", result.getVerdict());
-    }
-
-    private Sign[][] fillTableState() {
-        //x;o;x
-        //o;o;o
-        //x;o;x
-        Sign[][] tableState = new Sign[TABLE_SIZE][TABLE_SIZE];
-        for (int column = 0; column < TABLE_SIZE; column++) {
-            for (int row = 0; row < TABLE_SIZE; row++) {
-                if ((column % 2) == 1 || (row % 2) == 1) {
-                    tableState[column][row] = Sign.O;
-                } else {
-                    tableState[column][row] = Sign.X;
-                }
-            }
-        }
-        return tableState;
+        Assert.assertFalse(Arrays.deepEquals(result.getTableState(), gameStateBackup.getTableState()));
+        Assert.assertNull(result.getVerdict());
     }
 
     @Test
     void shouldFindGameState() {
         //given
-        GameState gameState = createNewGameState();
-        Sign[][] tableState = gameState.getTableState();
-        tableState[1][1] = null;
+        GameTableBuilder gameTableBuilder = new GameTableBuilder();
+        GameState gameState = new GameState();
+        Sign[][] tableState = gameTableBuilder
+                .setSigns(new Sign[]{Sign.O, Sign.O, Sign.X, Sign.X, null, Sign.O, Sign.X, Sign.X, Sign.O}).build();
+        gameState.setTableState(tableState);
         Sign nextPlayer = Sign.O;
 
         //when
@@ -168,13 +154,19 @@ class GameServiceTest {
 
         //then
         Assert.assertEquals(nextPlayer, result.getCurrentPlayer());
+        Assert.assertTrue(Arrays.deepEquals(tableState, result.getTableState()));
     }
 
     @Test
     void shouldResetGameState() {
         //given
-        GameState gameState = createNewGameState();
+        GameTableBuilder gameTableBuilder = new GameTableBuilder();
+        GameState gameState = new GameState();
+        Sign[][] tableState = gameTableBuilder
+                .setSigns(new Sign[]{Sign.O, Sign.O, Sign.X, Sign.X, null, Sign.O, Sign.O, Sign.X, Sign.O}).build();
+        gameState.setTableState(tableState);
         Sign[][] emptyTableState = new Sign[TABLE_SIZE][TABLE_SIZE];
+        Sign nextPlayerSign = Sign.O;
 
         //when
         Mockito.when(inMemoryRepository.getGameStateInMemory()).thenReturn(gameState);
@@ -183,5 +175,7 @@ class GameServiceTest {
         //then
         Sign[][] resultTableState = result.getTableState();
         Assert.assertTrue(Arrays.deepEquals(resultTableState, emptyTableState));
+        Assert.assertEquals(nextPlayerSign, result.getCurrentPlayer());
+        Assert.assertNull(result.getVerdict());
     }
 }

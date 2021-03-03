@@ -94,8 +94,8 @@ class ValidationServiceTest {
         //given
         GameTableBuilder gameTableBuilder = new GameTableBuilder();
         Sign[][] tableState = gameTableBuilder
-                .setSigns(new Sign[]{Sign.O, Sign.O, Sign.X, null, Sign.X, null, Sign.X, null, null}).build();
-        Sign currentMoveSign = Sign.X;
+                .setSigns(new Sign[]{Sign.X, Sign.X, Sign.O, null, Sign.O, null, Sign.O, null, null}).build();
+        Sign currentMoveSign = Sign.O;
 
         //when
         boolean result = validationService.checkWin(currentMoveSign, tableState);

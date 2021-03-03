@@ -27,16 +27,16 @@ public class GameServiceImpl implements GameService {
         GameState gameStateInMemory = inMemoryRepository.getGameStateInMemory();
         Sign[][] tableState = gameStateInMemory.getTableState();
         if (validationService.validateMove(tableState, move)) {
-            Sign nextMoveSign = calculateMove(tableState);
+            Sign currentMoveSign = calculateMoveSign(tableState);
             makeMove(tableState, move);
-            if (validationService.checkWin(nextMoveSign, tableState)) {
-                announceWinner();
+            if (validationService.checkWin(currentMoveSign, tableState)) {
+                announceWinner(currentMoveSign);
                 resetGameAtEnd();
             } else if (validationService.checkDraw(tableState)) {
                 announceDraw();
                 resetGameAtEnd();
             } else {
-                announceNextPlayerMove();
+                gameStateInMemory.setVerdict(null);
             }
         }
         return gameStateInMemory;
@@ -51,8 +51,7 @@ public class GameServiceImpl implements GameService {
     @Override
     public GameState findGameState() {
         GameState gameStateInMemory = inMemoryRepository.getGameStateInMemory();
-        calculateMove(gameStateInMemory.getTableState());
-        announceNextPlayerMove();
+        calculateMoveSign(gameStateInMemory.getTableState());
         return gameStateInMemory;
     }
 
@@ -61,25 +60,18 @@ public class GameServiceImpl implements GameService {
         GameState gameStateInMemory = inMemoryRepository.getGameStateInMemory();
         gameStateInMemory.setTableState(new Sign[TABLE_SIZE][TABLE_SIZE]);
         gameStateInMemory.setCurrentPlayer(Sign.O);
-        gameStateInMemory.setVerdict("Player " + gameStateInMemory.getCurrentPlayer().name() + " begins");
         return gameStateInMemory;
     }
 
-    private void announceNextPlayerMove() {
-        Sign currentMoveSign = inMemoryRepository.getGameStateInMemory().getCurrentPlayer();
-        inMemoryRepository.getGameStateInMemory().setVerdict("Next player: " + (currentMoveSign == Sign.O ? Sign.X.name() : Sign.O.name()));
-    }
-
     private void announceDraw() {
-        inMemoryRepository.getGameStateInMemory().setVerdict("Draw!");
+        inMemoryRepository.getGameStateInMemory().setVerdict("Draw");
     }
 
-    private void announceWinner() {
-        Sign nextMoveSign = inMemoryRepository.getGameStateInMemory().getCurrentPlayer();
-        inMemoryRepository.getGameStateInMemory().setVerdict("Player " + nextMoveSign.name() + " wins!");
+    private void announceWinner(Sign currentMoveSign) {
+        inMemoryRepository.getGameStateInMemory().setVerdict(currentMoveSign + " won");
     }
 
-    private Sign calculateMove(Sign[][] tableState) {
+    private Sign calculateMoveSign(Sign[][] tableState) {
         int xCount = 0;
         int oCount = 0;
         for (int column = 0; column < 3; column++) {
@@ -100,6 +92,7 @@ public class GameServiceImpl implements GameService {
         Sign moveSign = inMemoryRepository.getGameStateInMemory().getCurrentPlayer();
         tableState[move.getColumn()][move.getRow()] = moveSign;
         inMemoryRepository.getGameStateInMemory().setTableState(tableState);
-        inMemoryRepository.getGameStateInMemory().setCurrentPlayer(moveSign);
+        Sign nextMoveSign = calculateMoveSign(tableState);
+        inMemoryRepository.getGameStateInMemory().setCurrentPlayer(nextMoveSign);
     }
 }
